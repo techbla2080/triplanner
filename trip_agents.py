@@ -1,7 +1,10 @@
 from crewai import Agent
-from langchain_community.llms import OpenAI
+from langchain.llms import OpenAI
+
+from tools.browser_tools import BrowserTools
 from tools.calculator_tools import CalculatorTools
 from tools.search_tools import SearchTools
+
 
 
 class TripAgents():
@@ -14,10 +17,11 @@ class TripAgents():
         'An expert in analyzing travel data to pick ideal destinations',
         tools=[
             SearchTools.search_internet,
+             BrowserTools.scrape_and_summarize_website,
         ],
         verbose=True)
 
-  def local_expert(self):
+  def local_expert(self):   
     return Agent(
         role='Local Expert at this city',
         goal='Provide the BEST insights about the selected city',
@@ -25,6 +29,7 @@ class TripAgents():
         about the city, it's attractions and customs""",
         tools=[
             SearchTools.search_internet,
+            BrowserTools.scrape_and_summarize_website,
         ],
         verbose=True)
 
@@ -38,5 +43,6 @@ class TripAgents():
         tools=[
             SearchTools.search_internet,
             CalculatorTools.calculate,
+            BrowserTools.scrape_and_summarize_website,
         ],
         verbose=True)
