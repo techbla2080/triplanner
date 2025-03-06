@@ -18,11 +18,17 @@ from main import TripCrew
 
 app = Flask(__name__)
 
-# Configure CORS properly for all routes
+# Configure CORS properly for all routes - updated with quipit.ai domains
 CORS(app, 
      resources={
          r"/*": {
-             "origins": ["http://localhost:3000", "http://127.0.0.1:3000", "https://quipitnextjs.vercel.app"],
+             "origins": [
+                 "http://localhost:3000", 
+                 "http://127.0.0.1:3000", 
+                 "https://quipitnextjs.vercel.app",
+                 "https://quipit.ai",
+                 "https://www.quipit.ai"
+             ],
              "methods": ["GET", "POST", "OPTIONS"],
              "allow_headers": ["Content-Type", "Authorization"],
              "supports_credentials": True
@@ -90,7 +96,12 @@ def kickoff_trip_planning(job_id, location, cities, date_range, interests):
 @app.route('/api/crew', methods=['POST'])
 def plan_trip():
     if request.method == 'OPTIONS':
-        return '', 204
+        # Add CORS headers for preflight requests
+        response = jsonify({})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+        return response, 204
 
     try:
         data = request.json
@@ -147,7 +158,12 @@ def plan_trip():
 @app.route('/api/crew/<job_id>', methods=['GET'])
 def get_status(job_id):
     if request.method == 'OPTIONS':
-        return '', 204
+        # Add CORS headers for preflight requests
+        response = jsonify({})
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+        return response, 204
 
     try:
         with jobs_lock:
